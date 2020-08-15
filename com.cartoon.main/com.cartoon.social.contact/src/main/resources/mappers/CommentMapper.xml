@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cartoon.mapper.CommentMapper">
+
+    <select id="getCommentById" resultType="com.cartoon.entity.Comment">
+        select
+        id as id,
+        cartoon_id as cartoonId,
+        friends_id as friendsId,
+        uid as uid,
+        content as content,
+        createed_time as createedTime,
+        parent_id as parentId,
+        like_count as likeCount,
+        sub_comment_count as subCommentCount,
+        nickname as nickname,
+        vip as vip,
+        head_img as headImg
+        from comment
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getCommentListByMap" resultType="com.cartoon.entity.Comment" parameterType="java.util.Map">
+        select
+        id as id,
+        cartoon_id as cartoonId,
+        friends_id as friendsId,
+        uid as uid,
+        content as content,
+        createed_time as createedTime,
+        parent_id as parentId,
+        like_count as likeCount,
+        sub_comment_count as subCommentCount,
+        nickname as nickname,
+        vip as vip,
+        head_img as headImg
+
+        from comment
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null and id!=''">
+                and id=#{id}
+            </if>
+            <if test="cartoonId != null and cartoonId!=''">
+                and cartoon_id=#{cartoonId}
+            </if>
+            <if test="friendsId != null and friendsId!=''">
+                and friends_id=#{friendsId}
+            </if>
+            <if test="uid != null and uid!=''">
+                and uid=#{uid}
+            </if>
+            <if test="content != null and content!=''">
+                and content=#{content}
+            </if>
+            <if test="createedTime != null and createedTime!=''">
+                and createed_time=#{createedTime}
+            </if>
+            <if test="parentId != null and parentId!=''">
+                and parent_id=#{parentId}
+            </if>
+            <if test="likeCount != null and likeCount!=''">
+                and like_count=#{likeCount}
+            </if>
+            <if test="sub_comment_count != null and sub_comment_count!=''">
+                and sub_comment_count=#{subCommentCount}
+            </if>
+            <if test="nickname != null and nickname!=''">
+                and nickname=#{nickname}
+            </if>
+            <if test="vip != null">
+                and vip=#{vip}
+            </if>
+            <if test="head_img != null and head_img!=''">
+                and head_img=#{headImg}
+            </if>
+        </trim>
+        ORDER BY like_count DESC,sub_comment_count DESC
+        <if test="beginPos != null and pageSize != null ">
+            limit #{beginPos},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="getCommentCountByMap" resultType="Integer" parameterType="java.util.Map">
+        select count(*) from comment
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null and id!=''">
+                and id=#{id}
+            </if>
+            <if test="cartoonId != null and cartoonId!=''">
+                and cartoon_id=#{cartoonId}
+            </if>
+            <if test="friendsId != null and friendsId!=''">
+                and friends_id=#{friendsId}
+            </if>
+            <if test="uid != null and uid!=''">
+                and uid=#{uid}
+            </if>
+            <if test="content != null and content!=''">
+                and content=#{content}
+            </if>
+            <if test="createedTime != null and createedTime!=''">
+                and createed_time=#{createedTime}
+            </if>
+            <if test="parentId != null and parentId!=''">
+                and parent_id=#{parentId}
+            </if>
+            <if test="likeCount != null and likeCount!=''">
+                and like_count=#{likeCount}
+            </if>
+            <if test="sub_comment_count != null and sub_comment_count!=''">
+                and sub_comment_count=#{subCommentCount}
+            </if>
+            <if test="nickname != null and nickname!=''">
+                and nickname=#{nickname}
+            </if>
+            <if test="vip != null">
+                and vip=#{vip}
+            </if>
+            <if test="head_img != null and head_img!=''">
+                and head_img=#{headImg}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insertComment" parameterType="com.cartoon.entity.Comment">
+        insert into comment(
+        id,
+                        cartoon_id,
+                        friends_id,
+                        uid,
+                        content,
+                        createed_time,
+                        parent_id,
+                                nickname,
+            vip,
+        head_img)
+        values(
+        #{id},
+                     #{cartoonId},
+                     #{friendsId},
+                     #{uid},
+                     #{content},
+                     #{createedTime},
+                     #{parentId},
+                    #{nickname},
+                    #{vip},
+                    #{headImg})
+    </insert>
+
+    <update id="updateComment" parameterType="com.cartoon.entity.Comment">
+        update comment
+        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+            <if test="cartoonId != null and cartoonId!=''">
+                cartoon_id=#{cartoonId},
+            </if>
+            <if test="friendsId != null and friendsId!=''">
+                friends_id=#{friendsId},
+            </if>
+            <if test="uid != null and uid!=''">
+                uid=#{uid},
+            </if>
+            <if test="content != null and content!=''">
+                content=#{content},
+            </if>
+            <if test="createedTime != null and createedTime!=''">
+                createed_time=#{createedTime},
+            </if>
+            <if test="parentId != null and parentId!=''">
+                parent_id=#{parentId},
+            </if>
+            <if test="likeCount != null and likeCount!=''">
+                like_count=#{likeCount},
+            </if>
+            <if test="sub_comment_count != null and sub_comment_count!=''">
+                sub_comment_count=#{subCommentCount},
+            </if>
+            <if test="nickname != null and nickname!=''">
+                nickname=#{nickname},
+            </if>
+            <if test="vip != null">
+                vip=#{vip},
+            </if>
+            <if test="head_img != null and head_img!=''">
+                head_img=#{headImg}
+            </if>
+        </trim>
+    </update>
+
+
+    <update id="updateLikeCount">
+        update comment set like_count = like_count+1 where id=#{id}
+    </update>
+
+
+</mapper>

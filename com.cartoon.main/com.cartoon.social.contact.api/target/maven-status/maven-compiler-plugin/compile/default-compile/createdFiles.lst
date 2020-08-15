@@ -1,0 +1,2 @@
+com\cartoon\entity\Comment.class
+com\cartoon\feign\CommentFeignClient.class

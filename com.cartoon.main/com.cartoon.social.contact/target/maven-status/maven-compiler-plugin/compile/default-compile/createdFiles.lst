@@ -1,0 +1,13 @@
+com\cartoon\service\CommentService.class
+com\cartoon\SocialContactApp.class
+com\cartoon\service\impl\CommentServiceImpl.class
+com\cartoon\filter\MyFeignInteceptor.class
+com\cartoon\mapper\CommentMapper.class
+com\cartoon\controller\CommentController.class
+com\cartoon\config\GlobalExceptionHandler.class
+com\cartoon\config\ResourceServerConfig.class
+com\cartoon\aop\UserLogAspects.class
+com\cartoon\config\CustomAccessDeniedHandler.class
+com\cartoon\util\TokenDecode.class
+com\cartoon\config\AuthExceptionEntryPoint.class
+com\cartoon\controller\BaseController.class

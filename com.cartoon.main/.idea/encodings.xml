@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.common.api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.common.api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.eureka" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.eureka/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.gateway" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.social.contact" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.social.contact.api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.user" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.user.api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.user.api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.user.oauth" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.user.oauth.api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.user.oauth/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.cartoon.user/src/main/java" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>

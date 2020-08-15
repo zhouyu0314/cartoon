@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cartoon.mapper.ProductcategoryMapper">
+
+    <select id="getProductcategoryById" resultType="com.cartoon.entity.Productcategory">
+        select
+                id as id,
+                categoryName as categoryName
+        from productcategory
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getProductcategoryListByMap" resultType="com.cartoon.entity.Productcategory" parameterType="java.util.Map">
+        select
+                id as id,
+                categoryName as categoryName
+        from productcategory
+        <trim prefix="where" prefixOverrides="and | or">
+                <if test="id != null and id!=''">
+                    and id=#{id}
+                </if>
+                <if test="categoryName != null and categoryName!=''">
+                    and categoryName=#{categoryName}
+                </if>
+        </trim>
+        <if test="beginPos != null and pageSize != null ">
+            limit #{beginPos},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getProductcategoryCountByMap" resultType="Integer"  parameterType="java.util.Map">
+        select count(*) from productcategory
+        <trim prefix="where" prefixOverrides="and | or">
+                <if test="id != null and id!=''">
+                    and id=#{id}
+                </if>
+                <if test="categoryName != null and categoryName!=''">
+                    and categoryName=#{categoryName}
+                </if>
+        </trim>
+    </select>
+
+    <insert id="insertProductcategory" parameterType="com.cartoon.entity.Productcategory">
+        insert into productcategory(
+                        categoryName)
+        values(
+                    #{categoryName})
+    </insert>
+
+    <update id="updateProductcategory" parameterType="com.cartoon.entity.Productcategory">
+        update productcategory
+        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+                        <if test="categoryName != null and categoryName!=''">
+                            categoryName=#{categoryName}
+                        </if>
+        </trim>
+    </update>
+</mapper>
