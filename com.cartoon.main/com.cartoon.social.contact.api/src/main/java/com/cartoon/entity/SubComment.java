@@ -23,10 +23,19 @@ public class SubComment {
     private String headImg;
     //赞数量
     private Integer likesCount;
-/*    //是否回复的楼主
-    private boolean isMaster;*/
-    //分组
-    private String group;
+    //是否是楼主
+    private boolean isMaster;
+
+
+    private String replyTarget;
+
+    public String getReplyTarget() {
+        return replyTarget;
+    }
+
+    public void setReplyTarget(String replyTarget) {
+        this.replyTarget = replyTarget;
+    }
 
     @Override
     public String toString() {
@@ -40,9 +49,20 @@ public class SubComment {
                 ", vip=" + vip +
                 ", headImg='" + headImg + '\'' +
                 ", likesCount=" + likesCount +
-                ", group='" + group + '\'' +
+                ", isMaster=" + isMaster +
+                ", replyTarget=" + replyTarget +
                 '}';
     }
+
+    public boolean isMaster() {
+        return isMaster;
+    }
+
+    public void setMaster(boolean master) {
+        isMaster = master;
+    }
+
+
 
     public String getId() {
         return id;
@@ -116,12 +136,4 @@ public class SubComment {
         this.likesCount = likesCount;
     }
 
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
 }

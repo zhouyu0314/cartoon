@@ -2,8 +2,11 @@ package com.cartoon.service;
 
 import com.cartoon.entity.Comment;
 import com.cartoon.entity.SubComment;
+import com.cartoon.exceptions.DataNotFoundException;
 import com.cartoon.util.PageUtil;
+import org.springframework.data.mongodb.core.mapreduce.GroupByResults;
 
+import java.util.List;
 import java.util.Map;
 
 public interface CommentService {
@@ -12,20 +15,28 @@ public interface CommentService {
      */
     Comment addComment(Comment comment);
 
-    /**
-     * 对主评论评论
-     */
-    SubComment addSubComment(SubComment subComment);
 
     /**
      * 查看主评论
      */
     PageUtil<Comment> findComments(Map<String,String> params);
 
+
+
     /**
-     * 查看次评论
+     * 根据id查看评论
      */
-    PageUtil<SubComment> findSubComments(Map<String,String> params);
+    List<Comment> findByIdFromComment(String id);
+
+    /**
+     * 修改评论数量
+     */
+    void updateComment(String id);
+
+    /**
+     * 点赞
+     */
+    void addLikes(String id)throws DataNotFoundException;
 
 
 
