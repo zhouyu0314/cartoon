@@ -7,10 +7,7 @@ import com.cartoon.exceptions.DataNotFoundException;
 import com.cartoon.exceptions.InsertDataException;
 import com.cartoon.feign.UserFeignClient;
 import com.cartoon.service.CommentService;
-import com.cartoon.util.IdWorker;
-import com.cartoon.util.PageUtil;
-import com.cartoon.util.SimpleDate;
-import com.cartoon.util.TokenDecode;
+import com.cartoon.util.*;
 import com.rabbitmq.client.ListAddressResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -37,6 +34,9 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    RedisUtil redisUtil;
+
     //评论
     @Override
     public Comment addComment(Comment comment) throws InsertDataException {
@@ -56,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
-
+    //查找评论
     @Override
     public PageUtil<Comment> findComments(Map<String, String> params) {
         Integer commentsCount = findCommentCounts(params);
@@ -82,25 +82,50 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+//根据id查询评论
 
-    /**
-     * 根据id查询评论
-     */
     @Override
-    public Comment findByIdFromComment(String id) {
+    public List<Comment> findByIdFromComment(String id) {
         Query query = new Query(Criteria.where("id").is(id));
         List<Comment> commentList = mongoTemplate.find(query, Comment.class, "comment");
-        return commentList.get(0);
+        return commentList;
     }
 
 
-    /**
-     * 修改comment子评论数量
-     */
+    //修改comment子评论数量
+
     @Override
     public void updateComment(String id) {
         Query query = new Query(Criteria.where("_id").is(id));
         mongoTemplate.updateFirst(query, new Update().inc("subCommentCount", 1), Comment.class, "comment");
+    }
+
+    //点赞
+    @Override
+    public void addLikes(String id)throws DataNotFoundException {
+        List<Comment> comments = findByIdFromComment(id);
+        if (comments==null || comments.size()==0) {
+            throw new DataNotFoundException("评论游走了！");
+        }
+
+        Comment comment = comments.get(0);
+        String phone = TokenDecode.getUserInfo().get("username");
+        User userInfo = userFeignClient.getUserInfo(phone);
+        Comment redisLikes = new Comment();
+        redisLikes.setUid(phone);
+        redisLikes.setNickname(userInfo.getNickname());
+        redisLikes.setVip(userInfo.getVip());
+        redisLikes.setHeadImg(userInfo.getHeadImg());
+        redisLikes.setCreateedTime(SimpleDate.getDate1(new Date()));
+        if (redisUtil.sHasKey("like to:"+comment.getUid(),redisLikes)) {
+            //如果没有点过赞
+            Query query = new Query(Criteria.where("_id").is(id));
+            mongoTemplate.updateFirst(query, new Update().inc("likesCount", 1), Comment.class, "comment");
+        }
+        redisUtil.sSetAndTime("like to:"+comment.getUid(),60*60*24*30,redisLikes);
+        //再存一个提醒redis
+        redisUtil.sSetAndTime("like to dead:"+comment.getUid(),60*60*24*30,redisLikes);
+
     }
 
     //------------------------private-------------------------------
@@ -119,7 +144,7 @@ public class CommentServiceImpl implements CommentService {
         query.skip(Long.valueOf(params.get("beginPos"))).
                 limit(Integer.valueOf(params.get("pageSize")));
         query.with(Sort.by(
-              Sort.Order.desc("likesCount"),
+                Sort.Order.desc("likesCount"),
                 Sort.Order.asc("subCommentCount")));
         return mongoTemplate.find(query, Comment.class, "comment");
     }
@@ -141,13 +166,6 @@ public class CommentServiceImpl implements CommentService {
         Integer count = (int) mongoTemplate.count(query, Comment.class, "comment");
         return count;
     }
-
-
-
-
-
-
-
 
 
 }
