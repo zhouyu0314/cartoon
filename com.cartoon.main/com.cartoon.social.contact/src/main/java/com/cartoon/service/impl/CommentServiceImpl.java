@@ -3,6 +3,7 @@ package com.cartoon.service.impl;
 import com.cartoon.entity.Comment;
 import com.cartoon.entity.SubComment;
 import com.cartoon.entity.User;
+import com.cartoon.exceptions.DataNotFoundException;
 import com.cartoon.exceptions.InsertDataException;
 import com.cartoon.feign.UserFeignClient;
 import com.cartoon.service.CommentService;
@@ -10,12 +11,20 @@ import com.cartoon.util.IdWorker;
 import com.cartoon.util.PageUtil;
 import com.cartoon.util.SimpleDate;
 import com.cartoon.util.TokenDecode;
+import com.rabbitmq.client.ListAddressResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.mapreduce.GroupBy;
+import org.springframework.data.mongodb.core.mapreduce.GroupByResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,15 +37,11 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    /**
-     * 评论
-     *
-     * @param comment
-     * @return
-     * @throws InsertDataException
-     */
+    //评论
     @Override
     public Comment addComment(Comment comment) throws InsertDataException {
+        //先查找此漫画
+        //需要远程调用feign
         comment.setId(IdWorker.getId());
         String phone = TokenDecode.getUserInfo().get("username");
         comment.setUid(phone);
@@ -50,8 +55,16 @@ public class CommentServiceImpl implements CommentService {
         return mongoTemplate.save(comment, "comment");
     }
 
+    //子评论
     @Override
-    public SubComment addSubComment(SubComment subComment) {
+    public SubComment addSubComment(String id,String content,String replyTarget) {
+        //先查找主评论
+        Comment comment = findByIdFromComment(id);
+        if (comment == null) {
+            throw new DataNotFoundException("评论游走了！");
+        }
+        SubComment subComment = new SubComment();
+        subComment.setParentId(id);
         subComment.setId(IdWorker.getId());
         String phone = TokenDecode.getUserInfo().get("username");
         subComment.setUid(phone);
@@ -61,7 +74,9 @@ public class CommentServiceImpl implements CommentService {
         subComment.setVip(userInfo.getVip());
         subComment.setHeadImg(userInfo.getHeadImg());
         subComment.setLikesCount(0);
-        subComment.setGroup(phone);
+        subComment.setReplyTarget(replyTarget);
+        subComment.setContent(content);
+        updateComment(subComment.getParentId());
         return mongoTemplate.save(subComment, "subComment");
     }
 
@@ -90,8 +105,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public PageUtil<SubComment> findSubComments(Map<String, String> params) {
-        return null;
+    public List<SubComment> findSubComments(String commentId) {
+
+return  null;
+
     }
 
     //------------------------private-------------------------------
@@ -109,6 +126,11 @@ public class CommentServiceImpl implements CommentService {
         }
         query.skip(Long.valueOf(params.get("beginPos"))).
                 limit(Integer.valueOf(params.get("pageSize")));
+        query.with(Sort.by(
+                Sort.Order.desc("likesCount"),
+                Sort.Order.desc("subCommentCount")
+
+        ));
         return mongoTemplate.find(query, Comment.class, "comment");
     }
 
@@ -125,6 +147,37 @@ public class CommentServiceImpl implements CommentService {
         }
         Integer count = (int) mongoTemplate.count(query, Comment.class, "comment");
         return count;
+    }
+
+    /**
+     * 修改comment子评论数量
+     */
+    private void updateComment(String id) {
+        Query query = new Query(Criteria.where("_id").is(id));
+        mongoTemplate.updateFirst(query, new Update().inc("subCommentCount", 1), Comment.class, "comment");
+    }
+
+    /**
+     * 分组
+     */
+//    private List<String> aggr(String commentId) {
+//        List<String> list = new ArrayList<>();
+//        Aggregation aggregation = Aggregation.newAggregation(Aggregation.match(Criteria.where("id").is(commentId)), Aggregation.group("tag"));
+//        List<SubComment> subComment = mongoTemplate.aggregate(aggregation, "subComment", SubComment.class).getMappedResults();
+//        for (SubComment comment : subComment) {
+//            list.add(comment.getId());
+//        }
+//
+//    }
+
+
+    /**
+     * 根据id查询评论
+     */
+    private Comment findByIdFromComment(String id) {
+        Query query = new Query(Criteria.where("id").is(id));
+        List<Comment> commentList = mongoTemplate.find(query, Comment.class, "comment");
+        return commentList.get(0);
     }
 
 }

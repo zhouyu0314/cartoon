@@ -3,7 +3,9 @@ package com.cartoon.service;
 import com.cartoon.entity.Comment;
 import com.cartoon.entity.SubComment;
 import com.cartoon.util.PageUtil;
+import org.springframework.data.mongodb.core.mapreduce.GroupByResults;
 
+import java.util.List;
 import java.util.Map;
 
 public interface CommentService {
@@ -15,7 +17,7 @@ public interface CommentService {
     /**
      * 对主评论评论
      */
-    SubComment addSubComment(SubComment subComment);
+    SubComment addSubComment(String id,String content,String replyTarget);
 
     /**
      * 查看主评论
@@ -25,7 +27,7 @@ public interface CommentService {
     /**
      * 查看次评论
      */
-    PageUtil<SubComment> findSubComments(Map<String,String> params);
+    List<SubComment> findSubComments(String commentId);
 
 
 

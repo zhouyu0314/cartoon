@@ -28,6 +28,16 @@ public class SubComment {
     //分组
     private String group;
 
+    private String replyTarget;
+
+    public String getReplyTarget() {
+        return replyTarget;
+    }
+
+    public void setReplyTarget(String replyTarget) {
+        this.replyTarget = replyTarget;
+    }
+
     @Override
     public String toString() {
         return "SubComment{" +
@@ -41,6 +51,7 @@ public class SubComment {
                 ", headImg='" + headImg + '\'' +
                 ", likesCount=" + likesCount +
                 ", group='" + group + '\'' +
+                ", replyTarget='" + replyTarget + '\'' +
                 '}';
     }
 

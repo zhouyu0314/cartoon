@@ -8,6 +8,8 @@ import com.cartoon.service.CommentService;
 import com.cartoon.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,8 +41,8 @@ public class CommentController {
      * 追评
      */
     @PostMapping("/addSubComment")
-    public Dto addSubComment(SubComment subComment) {
-        SubComment data = commentService.addSubComment(subComment);
+    public Dto addSubComment(String id,String content,String replyTarget) {
+        SubComment data = commentService.addSubComment(id,content,replyTarget);
         return DtoUtil.returnSuccess("提交评论成功！",data);
     }
 
@@ -60,6 +62,15 @@ public class CommentController {
         params.put("currentPage", currentPage+"");
         PageUtil<Comment> allComment = commentService.findComments(params);
         return DtoUtil.returnSuccess("success", allComment);
+    }
+
+    /**
+     * 查看二级评论
+     */
+    @PostMapping("/findAllSubComment")
+    public Dto findAllSubComment(String commentId){
+        return DtoUtil.returnSuccess("子评论",commentService.findSubComments(commentId));
+
     }
 
 
