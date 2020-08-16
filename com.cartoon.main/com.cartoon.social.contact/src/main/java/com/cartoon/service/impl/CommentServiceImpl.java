@@ -55,30 +55,7 @@ public class CommentServiceImpl implements CommentService {
         return mongoTemplate.save(comment, "comment");
     }
 
-    //子评论
-    @Override
-    public SubComment addSubComment(String id,String content,String replyTarget) {
-        //先查找主评论
-        Comment comment = findByIdFromComment(id);
-        if (comment == null) {
-            throw new DataNotFoundException("评论游走了！");
-        }
-        SubComment subComment = new SubComment();
-        subComment.setParentId(id);
-        subComment.setId(IdWorker.getId());
-        String phone = TokenDecode.getUserInfo().get("username");
-        subComment.setUid(phone);
-        subComment.setCreateedTime(SimpleDate.getDate(new Date()));
-        User userInfo = userFeignClient.getUserInfo(phone);
-        subComment.setNickname(userInfo.getNickname());
-        subComment.setVip(userInfo.getVip());
-        subComment.setHeadImg(userInfo.getHeadImg());
-        subComment.setLikesCount(0);
-        subComment.setReplyTarget(replyTarget);
-        subComment.setContent(content);
-        updateComment(subComment.getParentId());
-        return mongoTemplate.save(subComment, "subComment");
-    }
+
 
     @Override
     public PageUtil<Comment> findComments(Map<String, String> params) {
@@ -104,11 +81,26 @@ public class CommentServiceImpl implements CommentService {
         return pageUtil;
     }
 
+
+
+    /**
+     * 根据id查询评论
+     */
     @Override
-    public List<SubComment> findSubComments(String commentId) {
+    public Comment findByIdFromComment(String id) {
+        Query query = new Query(Criteria.where("id").is(id));
+        List<Comment> commentList = mongoTemplate.find(query, Comment.class, "comment");
+        return commentList.get(0);
+    }
 
-return  null;
 
+    /**
+     * 修改comment子评论数量
+     */
+    @Override
+    public void updateComment(String id) {
+        Query query = new Query(Criteria.where("_id").is(id));
+        mongoTemplate.updateFirst(query, new Update().inc("subCommentCount", 1), Comment.class, "comment");
     }
 
     //------------------------private-------------------------------
@@ -127,10 +119,8 @@ return  null;
         query.skip(Long.valueOf(params.get("beginPos"))).
                 limit(Integer.valueOf(params.get("pageSize")));
         query.with(Sort.by(
-                Sort.Order.desc("likesCount"),
-                Sort.Order.desc("subCommentCount")
-
-        ));
+              Sort.Order.desc("likesCount"),
+                Sort.Order.asc("subCommentCount")));
         return mongoTemplate.find(query, Comment.class, "comment");
     }
 
@@ -145,39 +135,19 @@ return  null;
         } else {
             query = new Query(Criteria.where("cartoonId").is(params.get("cartoonId")));
         }
+        query.with(Sort.by(
+                Sort.Order.desc("likesCount"),
+                Sort.Order.desc("subCommentCount")));
         Integer count = (int) mongoTemplate.count(query, Comment.class, "comment");
         return count;
     }
 
-    /**
-     * 修改comment子评论数量
-     */
-    private void updateComment(String id) {
-        Query query = new Query(Criteria.where("_id").is(id));
-        mongoTemplate.updateFirst(query, new Update().inc("subCommentCount", 1), Comment.class, "comment");
-    }
-
-    /**
-     * 分组
-     */
-//    private List<String> aggr(String commentId) {
-//        List<String> list = new ArrayList<>();
-//        Aggregation aggregation = Aggregation.newAggregation(Aggregation.match(Criteria.where("id").is(commentId)), Aggregation.group("tag"));
-//        List<SubComment> subComment = mongoTemplate.aggregate(aggregation, "subComment", SubComment.class).getMappedResults();
-//        for (SubComment comment : subComment) {
-//            list.add(comment.getId());
-//        }
-//
-//    }
 
 
-    /**
-     * 根据id查询评论
-     */
-    private Comment findByIdFromComment(String id) {
-        Query query = new Query(Criteria.where("id").is(id));
-        List<Comment> commentList = mongoTemplate.find(query, Comment.class, "comment");
-        return commentList.get(0);
-    }
+
+
+
+
+
 
 }

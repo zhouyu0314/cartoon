@@ -14,20 +14,23 @@ public interface CommentService {
      */
     Comment addComment(Comment comment);
 
-    /**
-     * 对主评论评论
-     */
-    SubComment addSubComment(String id,String content,String replyTarget);
 
     /**
      * 查看主评论
      */
     PageUtil<Comment> findComments(Map<String,String> params);
 
+
+
     /**
-     * 查看次评论
+     * 根据id查看评论
      */
-    List<SubComment> findSubComments(String commentId);
+    Comment findByIdFromComment(String id);
+
+    /**
+     * 修改评论数量
+     */
+    void updateComment(String id);
 
 
 
