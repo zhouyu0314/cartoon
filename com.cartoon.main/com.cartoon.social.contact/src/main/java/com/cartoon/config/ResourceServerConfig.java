@@ -71,7 +71,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         //所有请求必须认证通过
         http.authorizeRequests()
                 //下边的路径放行
-                .antMatchers(
+                .antMatchers("/api/comment/findAllComment",
+                        "/api/subComment/findAllSubComment",
                             "/swagger*//**",
                             "/v2/api-docs",
                             "/webjars*//**"). //配置地址放行
