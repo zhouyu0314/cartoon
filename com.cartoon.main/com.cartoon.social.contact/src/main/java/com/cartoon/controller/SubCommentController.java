@@ -55,4 +55,24 @@ public class SubCommentController {
         subCmmentService.addLikes(id);
         return DtoUtil.returnSuccess("点赞成功！");
     }
+
+    /**
+     * 前端间隔访问获取通知
+     */
+    @GetMapping("/getNoticesCount")
+    public Dto getNoticesCount(){
+        return DtoUtil.returnSuccess("当前通知数量",subCmmentService.getNoticesCount());
+    }
+
+    /**
+     * 查看谁给我点过赞和评论
+     */
+    @GetMapping("/getNotices")
+    public Dto getNotices(@RequestParam(defaultValue = "0") Integer currentPage){
+        Map<String,Object> params = new HashMap<>();
+        params.put("pageSize", pageSize + "");
+        params.put("currentPage", currentPage + "");
+        return DtoUtil.returnSuccess("最近的通知",subCmmentService.getNotices(params));
+    }
+
 }

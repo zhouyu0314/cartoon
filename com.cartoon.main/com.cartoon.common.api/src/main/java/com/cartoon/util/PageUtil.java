@@ -1,7 +1,9 @@
 package com.cartoon.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 此为新版的分页工具，老版的不适用于微服，微服之间通过http发请求会将
@@ -36,7 +38,15 @@ public class PageUtil<T> {
     //总页数
     private int totalPage;
     private List<T> lists = new ArrayList<T>();
+    private Set<T> sets = new HashSet<>();
 
+    public Set<T> getSets() {
+        return sets;
+    }
+
+    public void setSets(Set<T> sets) {
+        this.sets = sets;
+    }
 
     public int getCurrentPage() {
         return currentPage;

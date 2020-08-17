@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class SubCommentServiceImpl implements SubCommentService {
@@ -44,25 +45,25 @@ public class SubCommentServiceImpl implements SubCommentService {
         SubComment subComment = new SubComment();
         String phone = TokenDecode.getUserInfo().get("username");
         User userInfo = userFeignClient.getUserInfo(phone);
-        if (comment == null || comment.size()==0) {
+        if (comment == null || comment.size() == 0) {
             //如果不是对主评论的回复，而是对二级评论的回复
             List<SubComment> data = findByIdFromSubComment(id);
-            if (data==null || data.size()==0) {
+            if (data == null || data.size() == 0) {
                 throw new DataNotFoundException();
-            }else{
+            } else {
                 //不是对主评论的评论
                 subComment.setParentId(data.get(0).getParentId());
                 //设置回复目标，主评论回复设为null
                 subComment.setReplyTarget(data.get(0).getUid());
                 String uid = commentService.findByIdFromComment(data.get(0).getParentId()).get(0).getUid();
-                subComment.setMaster(phone.equals(uid)?true:false);
+                subComment.setMaster(phone.equals(uid) ? true : false);
 
             }
-        }else{
+        } else {
             //设置回复目标，主评论回复设为null
             subComment.setReplyTarget(null);
             subComment.setParentId(id);
-            subComment.setMaster(phone.equals(comment.get(0).getUid())?true:false);
+            subComment.setMaster(phone.equals(comment.get(0).getUid()) ? true : false);
         }
 
         subComment.setId(IdWorker.getId());
@@ -79,20 +80,23 @@ public class SubCommentServiceImpl implements SubCommentService {
         //修改主评论数量
         commentService.updateComment(subComment.getParentId());
         //当评论完后会有通知 存list 一个月
-        if (subComment.getReplyTarget()==null) {
-            redisUtil.lSet("comment to:"+comment.get(0).getUid(),1,60*60*24*30);
-        }else{
-            redisUtil.lSet("comment to:"+subComment.getReplyTarget(),1,60*60*24*30);
+        if (subComment.getReplyTarget() == null) {
+            redisUtil.lSet("comment to:" + comment.get(0).getUid(), 1, 60 * 60 * 24 * 30);
+            redisUtil.zadd("notices:" + comment.get(0).getUid(), subComment, (double) System.currentTimeMillis() * -1);
+
+        } else {
+            redisUtil.lSet("comment to:" + subComment.getReplyTarget(), 1, 60 * 60 * 24 * 30);
+            redisUtil.zadd("notices:" + comment.get(0).getUid(), subComment, (double) System.currentTimeMillis() * -1);
         }
 
         return mongoTemplate.save(subComment, "subComment");
     }
 
     @Override
-    public PageUtil<SubComment> findSubComments(Map<String,String> params) {
+    public PageUtil<SubComment> findSubComments(Map<String, String> params) {
         //先查询评论是否还在
         List<Comment> comment = commentService.findByIdFromComment(params.get("id"));
-        if (comment == null || comment.size()==0) {
+        if (comment == null || comment.size() == 0) {
             throw new DataNotFoundException("评论游走了！");
         }
         Integer SubCommentCounts = findSubCommentCounts(params);
@@ -121,7 +125,7 @@ public class SubCommentServiceImpl implements SubCommentService {
     @Override
     public void addLikes(String id) throws DataNotFoundException {
         List<SubComment> subComments = findByIdFromSubComment(id);
-        if (subComments==null || subComments.size()==0) {
+        if (subComments == null || subComments.size() == 0) {
             throw new DataNotFoundException("评论游走了！");
         }
 
@@ -134,15 +138,52 @@ public class SubCommentServiceImpl implements SubCommentService {
         redisLikes.setVip(userInfo.getVip());
         redisLikes.setHeadImg(userInfo.getHeadImg());
         redisLikes.setCreateedTime(SimpleDate.getDate1(new Date()));
-        if (!redisUtil.sHasKey("like to:"+subComment.getUid(),redisLikes)) {
+        // if (!redisUtil.sHasKey("like to:"+subComment.getUid(),redisLikes)) {
+        Double aDouble = redisUtil.zGetScore("notices:" + subComment.getUid(), redisLikes);
+        if (redisUtil.zGetScore("notices:" + subComment.getUid(), redisLikes) == null) {
+
             //如果没有点过赞
             Query query = new Query(Criteria.where("_id").is(id));
             mongoTemplate.updateFirst(query, new Update().inc("likesCount", 1), SubComment.class, "subComment");
         }
-        redisUtil.sSetAndTime("like to:"+subComment.getUid(),60*60*24*30,redisLikes);
+        redisUtil.zadd("notices:" + subComment.getUid(), redisLikes, (double) System.currentTimeMillis());
+        //redisUtil.sSetAndTime("like to:" + subComment.getUid(), 60 * 60 * 24 * 30, redisLikes);
         //再存一个提醒redis
-        redisUtil.sSetAndTime("like to dead:"+subComment.getUid(),60*60*24*30,redisLikes);
+        redisUtil.sSetAndTime("like to dead:" + subComment.getUid(), 60 * 60 * 24 * 30, redisLikes);
     }
+
+    //获取通知
+    @Override
+    public Integer getNoticesCount() {
+        String phone = TokenDecode.getUserInfo().get("username");
+        //获取赞的通知数量
+        Set<Object> objects = redisUtil.sGet("like to dead:" + phone);
+        //删除通知
+        redisUtil.del("like to dead:" + phone);
+
+        int likesCount = (int) redisUtil.lGetListSize("comment to:" + phone);
+        redisUtil.del("comment to:" + phone);
+        return likesCount + objects.size();
+    }
+
+    //获取最近的通知(分页)
+    @Override
+    public PageUtil<SubComment> getNotices(Map<String, Object> params) {
+        String phone = TokenDecode.getUserInfo().get("username");
+        PageUtil<SubComment> pageUtil = new PageUtil<>();
+        pageUtil.setTotalCount(Integer.valueOf(getCountByRedis("notices:" + phone).toString()));
+        //设置页面显示数量
+        pageUtil.sPageSize(Integer.valueOf(params.get("pageSize").toString()));
+        //设置当前页面数
+        pageUtil.sCurrentPage(Integer.valueOf(params.get("currentPage").toString()));
+
+        Long currentPage = Long.valueOf( pageUtil.getCurrentPage());
+        Long pageSize = Long.valueOf(pageUtil.getPageSize());
+        Set range = redisUtil.zGetRange("notices:" + phone, (currentPage-1)*pageSize, (currentPage*pageSize)-1);
+        pageUtil.setSets(range);
+        return pageUtil;
+    }
+
 
     //-------------------------private----------------------------------
 
@@ -178,7 +219,12 @@ public class SubCommentServiceImpl implements SubCommentService {
         return subCommentList;
     }
 
-
+    /**
+     * 获取redis中的数量
+     */
+    private Long getCountByRedis(String key) {
+        return redisUtil.zGetCount(key);
+    }
 
 
 }
