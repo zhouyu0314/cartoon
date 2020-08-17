@@ -117,12 +117,13 @@ public class CommentServiceImpl implements CommentService {
         redisLikes.setVip(userInfo.getVip());
         redisLikes.setHeadImg(userInfo.getHeadImg());
         redisLikes.setCreateedTime(SimpleDate.getDate1(new Date()));
-        if (redisUtil.sHasKey("like to:"+comment.getUid(),redisLikes)) {
+        if (redisUtil.zGetScore("notices:" + comment.getUid(), redisLikes) == null) {
             //如果没有点过赞
             Query query = new Query(Criteria.where("_id").is(id));
             mongoTemplate.updateFirst(query, new Update().inc("likesCount", 1), Comment.class, "comment");
         }
-        redisUtil.sSetAndTime("like to:"+comment.getUid(),60*60*24*30,redisLikes);
+        //redisUtil.sSetAndTime("like to:"+comment.getUid(),60*60*24*30,redisLikes);
+        redisUtil.zadd("notices:"+comment.getUid(),redisLikes,(double)System.currentTimeMillis()*-1);
         //再存一个提醒redis
         redisUtil.sSetAndTime("like to dead:"+comment.getUid(),60*60*24*30,redisLikes);
 
@@ -145,7 +146,7 @@ public class CommentServiceImpl implements CommentService {
                 limit(Integer.valueOf(params.get("pageSize")));
         query.with(Sort.by(
                 Sort.Order.desc("likesCount"),
-                Sort.Order.asc("subCommentCount")));
+                Sort.Order.desc("subCommentCount")));
         return mongoTemplate.find(query, Comment.class, "comment");
     }
 
@@ -160,9 +161,6 @@ public class CommentServiceImpl implements CommentService {
         } else {
             query = new Query(Criteria.where("cartoonId").is(params.get("cartoonId")));
         }
-        query.with(Sort.by(
-                Sort.Order.desc("likesCount"),
-                Sort.Order.desc("subCommentCount")));
         Integer count = (int) mongoTemplate.count(query, Comment.class, "comment");
         return count;
     }

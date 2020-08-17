@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.awt.image.DataBufferDouble;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -594,7 +595,46 @@ public class RedisUtil {
         return boundValueOperations.rightPop();
     }
 
+    //------------------------zset-------------------------------
 
+    /**
+     * 存
+     * @param key
+     * @param value
+     * @param score
+     * @return
+     */
+    public Boolean zadd(String key, Object value, Double score){
+        return redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    /**
+     * 获取分值 如果redis中没有此value返回null
+     * @param key
+     * @param obj
+     * @return
+     */
+    public Double zGetScore(String key,Object obj){
+        return redisTemplate.opsForZSet().score(key,obj);
+    }
+
+    /**
+     * 获取区间的元素
+     * @param key
+     * @param start
+     * @param end
+     * @return
+     */
+    public Set<Object> zGetRange(String key,long start,long end){
+        return redisTemplate.opsForZSet().range(key,start,end);
+    }
+
+    /**
+     * 获取数量
+     */
+     public Long zGetCount(String key){
+         return redisTemplate.opsForZSet().zCard(key);
+     }
 }
 
 //=========BoundListOperations 用法 End============
