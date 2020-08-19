@@ -7,6 +7,7 @@ import com.cartoon.mapper.UserMapper;
 import com.cartoon.serivce.IUserService;
 import com.cartoon.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -26,6 +27,9 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private AccountRecordAsyn accountRecordAsyn;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
 
     //用户注册
     @Override
@@ -246,24 +250,30 @@ public class UserServiceImpl implements IUserService {
         String phone = params.get("phone").toString();
         User user = new User();
         user.setPhone(phone);
-        String gold = params.get("gold").toString();
-        if (gold != null) {
-            user.setGold(Integer.valueOf(gold));
-        }
-        String score = params.get("score").toString();
-        if (score != null) {
-            user.setScore(Integer.valueOf(score));
+
+        Integer type = Integer.valueOf(params.get("type").toString());
+        Integer count = Integer.valueOf(params.get("count").toString());
+        switch (type){
+            //元宝gold
+            case 1:
+                user.setGold(count);
+                break;
+                //阅读券(coupon)
+            case 2:
+                user.setCoupon(count);
+                break;
+                //积分(score)
+            case 3:
+                user.setScore(count);
+                break;
+                //月票(ticket)
+            case 4:
+                user.setTicket(count);
+                break;
+            default:
+                break;
         }
 
-        String ticket = params.get("ticket").toString();
-        if (ticket != null) {
-            user.setTicket(Integer.valueOf(ticket));
-        }
-
-        String coupon = params.get("coupon").toString();
-        if (coupon != null) {
-            user.setCoupon(Integer.valueOf(coupon));
-        }
         Integer rows = updateUserInfo(user);
         //修改后应记录，此处和用户无关了开启异步线程
         accountRecordAsyn.add(params);

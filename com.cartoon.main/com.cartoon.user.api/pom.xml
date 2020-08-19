@@ -22,12 +22,6 @@
             <version>1.10</version>
         </dependency>
 
-
-        <!--支持全栈式Web开发，包括Tomcat和spring-webmvc-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
         <!--JSON -->
         <dependency>
             <groupId>com.alibaba</groupId>

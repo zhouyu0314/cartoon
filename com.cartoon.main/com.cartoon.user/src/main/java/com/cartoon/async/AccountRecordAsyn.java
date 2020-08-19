@@ -19,21 +19,29 @@ public class AccountRecordAsyn {
     /**
      * 创建消费记录，前端需提供：
      * 1.用户phone
-     * 2.记录分类type（阅读券1、积分2、月票3、优惠券4、限免券5、净化卡6）
+     * 2.记录分类type（元宝（gold）1、vip2、阅读券(coupon)3、积分(score)4、月票(ticket)5）
      * 3.记录描述RecordReason
      * 4.数量count
      * 5.消费目标/获得来源target
      */
     @Async
     public void add(Map<String, Object> params) {
+
         AccountRecord accountRecord = new AccountRecord();
         accountRecord.setId(IdWorker.getId());
         accountRecord.setCreateTime(SimpleDate.getDate(new Date()));
         accountRecord.setPhone(params.get("phone").toString());
-        accountRecord.setRecordReason(params.get("记录描述RecordReason").toString());
+        accountRecord.setRecordReason(params.get("recordReason").toString());
         accountRecord.setType(Integer.valueOf(params.get("type").toString()));
-        accountRecord.setCount(Integer.valueOf(params.get("数量count").toString()));
-        accountRecord.setTarget(params.get("target").toString());
-        mongoTemplate.save(accountRecord, "accountRecords");
+        accountRecord.setCount(Integer.valueOf(params.get("count").toString()));
+        Object target = params.get("target");
+        if (target==null) {
+            accountRecord.setTarget("");
+        }else{
+            accountRecord.setTarget(target.toString());
+        }
+
+        AccountRecord accountRecords = mongoTemplate.save(accountRecord, "accountRecords");
+        System.out.println(accountRecords);
     }
 }

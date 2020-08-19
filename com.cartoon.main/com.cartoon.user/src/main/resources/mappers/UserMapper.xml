@@ -253,11 +253,10 @@
                      #{fansCount},
                      #{focusCount})
     </insert>
-
+<!--and (gold>=#{gold} or ticket>=#{ticket} or score>=#{score} or coupon>=#{coupon})-->
     <update id="updateUser" parameterType="com.cartoon.entity.User">
         update user
-        <trim prefix="set" suffixOverrides="," suffix="where phone=#{phone} and
-         (gold>=#{gold} or ticket>=#{ticket} or score>=#{score} or coupon>=#{coupon})">
+        <trim prefix="set" suffixOverrides="," suffix="where phone=#{phone} ">
             <if test="headImg != null and headImg!=''">
                 head_img=#{headImg},
             </if>
@@ -287,16 +286,16 @@
                 is_delete=#{isDelete},
             </if>
             <if test="gold != null and gold!=''">
-                gold=gold-#{gold},
+                gold=gold+#{gold},
             </if>
             <if test="ticket != null and ticket!=''">
-                ticket=ticket-#{ticket},
+                ticket=ticket+#{ticket},
             </if>
             <if test="score != null and score!=''">
-                score=score-#{score},
+                score=score+#{score},
             </if>
             <if test="coupon != null and coupon!=''">
-                coupon=coupon-#{coupon},
+                coupon=coupon+#{coupon},
             </if>
             <if test="vip != null and vip!='' or vip ==0">
                 vip=#{vip},

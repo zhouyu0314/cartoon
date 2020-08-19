@@ -26,6 +26,8 @@ public interface UserFeignClient {
     @GetMapping("/api/user/getUserInfo/{phone}")
     User getUserInfo(@PathVariable("phone") String phone);
 
+
+
     /**
      * oauth调用，验证用户vip合法性
      *
@@ -34,6 +36,17 @@ public interface UserFeignClient {
     @PostMapping("/checkVip")
     void checkVip(@RequestBody User user);
 
-    @PostMapping("/updateUsergoldOrTicketOrScoreOrCoupon")
+
+    /**
+     * 前端需提供
+     * 1.用户phone
+     * 2.记录分类type（元宝（gold）1、阅读券(coupon)2、积分(score)3、月票(ticket)4、vip5）
+     * 3.记录描述recordReason
+     * 4.数量count
+     * 5.消费目标/获得来源target
+     * @param params
+     * @return
+     */
+    @PostMapping("/api/user/updateUsergoldOrTicketOrScoreOrCoupon")
     Dto updateUsergoldOrTicketOrScoreOrCoupon(@RequestBody Map<String, Object> params);
 }

@@ -15,7 +15,7 @@ public class AccountRecord implements Serializable {
     private String id;
     //用户phone
     private String phone;
-    //记录分类（阅读券、积分、月票、优惠券、限免券、净化卡）
+    //记录分类（元宝、vip、阅读券、积分、月票、优惠券、限免券、净化卡）
     private Integer type;
     //记录描述
     private String RecordReason;
