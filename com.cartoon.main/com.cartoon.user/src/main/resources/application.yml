@@ -7,7 +7,15 @@ spring:
     multipart:
       max-file-size: 200KB
       max-request-size: 1MB
-
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/col
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: my_test_tx_group
   kafka:
     bootstrap-servers: 192.168.1.110:9092
     producer:
@@ -44,6 +52,9 @@ headImgTempPath: D:/cartoonImg
 oauth:
   clientId: doctor
   clientSecret: good123
+
+page:
+  size: 10
 
 #分享链接
   #http://localhost:8001/api/user/userReg

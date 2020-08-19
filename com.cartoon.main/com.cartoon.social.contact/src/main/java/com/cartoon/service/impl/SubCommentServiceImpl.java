@@ -138,8 +138,6 @@ public class SubCommentServiceImpl implements SubCommentService {
         redisLikes.setVip(userInfo.getVip());
         redisLikes.setHeadImg(userInfo.getHeadImg());
         redisLikes.setCreateedTime(SimpleDate.getDate1(new Date()));
-        // if (!redisUtil.sHasKey("like to:"+subComment.getUid(),redisLikes)) {
-        Double aDouble = redisUtil.zGetScore("notices:" + subComment.getUid(), redisLikes);
         if (redisUtil.zGetScore("notices:" + subComment.getUid(), redisLikes) == null) {
 
             //如果没有点过赞
@@ -147,7 +145,6 @@ public class SubCommentServiceImpl implements SubCommentService {
             mongoTemplate.updateFirst(query, new Update().inc("likesCount", 1), SubComment.class, "subComment");
         }
         redisUtil.zadd("notices:" + subComment.getUid(), redisLikes, (double) System.currentTimeMillis());
-        //redisUtil.sSetAndTime("like to:" + subComment.getUid(), 60 * 60 * 24 * 30, redisLikes);
         //再存一个提醒redis
         redisUtil.sSetAndTime("like to dead:" + subComment.getUid(), 60 * 60 * 24 * 30, redisLikes);
     }

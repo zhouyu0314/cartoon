@@ -32,7 +32,7 @@ public interface UserMapper {
 
     Integer updateUser(User user);
 
-    @Select("select nickname,vip,head_img as headImg from user where phone=#{phone}")
+    @Select("select nickname,vip,gold,ticket,score,coupon,head_img as headImg from user where phone=#{phone}")
     User getUserInfo(String phone);
 
 

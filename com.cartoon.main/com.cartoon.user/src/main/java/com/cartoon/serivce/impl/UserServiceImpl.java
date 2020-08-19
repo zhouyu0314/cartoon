@@ -1,12 +1,13 @@
 package com.cartoon.serivce.impl;
 
+import com.cartoon.async.AccountRecordAsyn;
 import com.cartoon.entity.User;
 import com.cartoon.exceptions.*;
-import com.cartoon.feign.CommentFeignClient;
 import com.cartoon.mapper.UserMapper;
 import com.cartoon.serivce.IUserService;
 import com.cartoon.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -25,7 +26,10 @@ public class UserServiceImpl implements IUserService {
     private RedisUtil redisUtil;
 
     @Autowired
-    private CommentFeignClient commentFeignClient;
+    private AccountRecordAsyn accountRecordAsyn;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
 
     //用户注册
     @Override
@@ -94,7 +98,7 @@ public class UserServiceImpl implements IUserService {
         //验证手机号
         CommonCheckUtil.checkPhone(phone);
         //先从redis里找
-        User userFromRedis = (User) redisUtil.get("userinfo:"+phone);
+        User userFromRedis = (User) redisUtil.get("userinfo:" + phone);
         if (userFromRedis != null) {
             return userFromRedis;
         }
@@ -198,13 +202,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public String getToken(String phone)throws LoginTimeOutException {
+    public String getToken(String phone) throws LoginTimeOutException {
         String token = redisUtil.get("expire:" + phone).toString();
         if (token == null) {
             throw new LoginTimeOutException("登录超时！请重新登录。");
         }
         //继续存35分钟
-        redisUtil.expire("expire:" + phone,60*35);
+        redisUtil.expire("expire:" + phone, 60 * 35);
         return token;
     }
 
@@ -240,11 +244,40 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
-    //查询redis中有多少用户的通知消息
+    //修改用户的元宝、积分、月票。。。。
     @Override
-    public Long findMsgCount() {
+    public Integer updateUsergoldOrTicketOrScoreOrCoupon(Map<String, Object> params) throws InsertDataException {
+        String phone = params.get("phone").toString();
+        User user = new User();
+        user.setPhone(phone);
 
-        return commentFeignClient.findMsgCount();
+        Integer type = Integer.valueOf(params.get("type").toString());
+        Integer count = Integer.valueOf(params.get("count").toString());
+        switch (type){
+            //元宝gold
+            case 1:
+                user.setGold(count);
+                break;
+                //阅读券(coupon)
+            case 2:
+                user.setCoupon(count);
+                break;
+                //积分(score)
+            case 3:
+                user.setScore(count);
+                break;
+                //月票(ticket)
+            case 4:
+                user.setTicket(count);
+                break;
+            default:
+                break;
+        }
+
+        Integer rows = updateUserInfo(user);
+        //修改后应记录，此处和用户无关了开启异步线程
+        accountRecordAsyn.add(params);
+        return rows;
     }
 
 
@@ -276,7 +309,6 @@ public class UserServiceImpl implements IUserService {
     }
 
 
-
     /**
      * 修改用户资料
      */
@@ -287,7 +319,7 @@ public class UserServiceImpl implements IUserService {
         }
         //修改完之后查一下存redis
         List<User> userByPhone = findUserByPhone(user.getPhone());
-        redisUtil.set("userinfo:"+user.getPhone(),userByPhone.get(0) ,60*35);
+        redisUtil.set("userinfo:" + user.getPhone(), userByPhone.get(0), 60 * 35);
         return rows;
     }
 

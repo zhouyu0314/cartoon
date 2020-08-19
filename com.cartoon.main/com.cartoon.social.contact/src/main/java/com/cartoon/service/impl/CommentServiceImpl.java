@@ -1,27 +1,19 @@
 package com.cartoon.service.impl;
 
 import com.cartoon.entity.Comment;
-import com.cartoon.entity.SubComment;
 import com.cartoon.entity.User;
 import com.cartoon.exceptions.DataNotFoundException;
 import com.cartoon.exceptions.InsertDataException;
 import com.cartoon.feign.UserFeignClient;
 import com.cartoon.service.CommentService;
 import com.cartoon.util.*;
-import com.rabbitmq.client.ListAddressResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.mapreduce.GroupBy;
-import org.springframework.data.mongodb.core.mapreduce.GroupByResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -122,7 +114,6 @@ public class CommentServiceImpl implements CommentService {
             Query query = new Query(Criteria.where("_id").is(id));
             mongoTemplate.updateFirst(query, new Update().inc("likesCount", 1), Comment.class, "comment");
         }
-        //redisUtil.sSetAndTime("like to:"+comment.getUid(),60*60*24*30,redisLikes);
         redisUtil.zadd("notices:"+comment.getUid(),redisLikes,(double)System.currentTimeMillis()*-1);
         //再存一个提醒redis
         redisUtil.sSetAndTime("like to dead:"+comment.getUid(),60*60*24*30,redisLikes);

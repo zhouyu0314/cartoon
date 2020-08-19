@@ -6,7 +6,4 @@ import org.springframework.web.bind.annotation.GetMapping;
 @FeignClient("com.cartoon.social.contact")
 public interface CommentFeignClient {
 
-    @GetMapping("/api/comment/findMsgCount")
-    Long findMsgCount();
-
 }
