@@ -40,8 +40,6 @@ public class AccountRecordAsyn {
         }else{
             accountRecord.setTarget(target.toString());
         }
-
-        AccountRecord accountRecords = mongoTemplate.save(accountRecord, "accountRecords");
-        System.out.println(accountRecords);
+        mongoTemplate.save(accountRecord, "accountRecords");
     }
 }

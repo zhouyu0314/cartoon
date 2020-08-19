@@ -3,14 +3,15 @@ package com.cartoon.serivce;
 import com.cartoon.entity.AccountRecord;
 
 import java.util.List;
-import java.util.Map;
 
 public interface AccountRecordService {
 
-
     /**
-     * 查看用的消费信息（分页），查出后存redis设置过期时间
+     * 查询账户记录
+     * @param id
+     * @param type 记录分类type（元宝（gold）1、阅读券(coupon)2、积分(score)3、月票(ticket)4、vip5）
+     * @return
      */
-    List<AccountRecord> findAccountRecords(Map<String ,Object> params);
+    List<AccountRecord> findAccountRecord(String id,Integer type);
 
 }
