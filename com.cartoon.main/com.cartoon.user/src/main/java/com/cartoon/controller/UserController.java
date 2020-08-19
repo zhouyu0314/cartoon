@@ -88,6 +88,7 @@ public class UserController extends BaseController {
 
     /**
      * 修改密码
+     *
      * @param newPwd
      * @param oldPwd
      * @return
@@ -132,6 +133,7 @@ public class UserController extends BaseController {
 
     /**
      * 此为redis里最新的token
+     *
      * @return
      */
     @GetMapping("/getToken")
@@ -141,21 +143,11 @@ public class UserController extends BaseController {
         return DtoUtil.returnSuccess("新的token！", iUserService.getToken(phone));
 
     }
-    @GetMapping("/findMsgCount")
-    public Dto findMsgCount(){
-
-        return DtoUtil.returnSuccess("消息通知数量",iUserService.findMsgCount());
-
-    }
-
-
-
-
-
 
 
 
     //-----------------feign----------------------
+
     /**
      * 根据手机查询用户信息，oauth调用
      *
@@ -170,15 +162,17 @@ public class UserController extends BaseController {
 
     /**
      * oauth调用，验证用户vip合法性
+     *
      * @param user
      */
     @PostMapping("/checkVip")
-    public void checkVip(@RequestBody User user){
+    public void checkVip(@RequestBody User user) {
         iUserService.checkVip(user);
     }
 
     /**
-     * 查询用户的头像，昵称，vip feign调用，目前没用 备用吧
+     * 查询用户的头像，昵称，vip,元宝,月票,积分 feign调用
+     *
      * @param phone
      * @return
      */
@@ -188,13 +182,11 @@ public class UserController extends BaseController {
     }
 
 
-//    @PostMapping("/changeUserInfoforfeign")
-//    public void changeUserInfoForFeign(User user) {
-//        //解析token
-//        Map<String, String> userInfo = TokenDecode.getUserInfo();
-//        user.setId(userInfo.get("id"));
-//        iUserService.changeUserInfo(user);
-//    }
+    @PostMapping("/updateUsergoldOrTicketOrScoreOrCoupon")
+    public Dto updateUsergoldOrTicketOrScoreOrCoupon(/*@RequestBody*/ Map<String, Object> params) {
+        return DtoUtil.returnSuccess("如果返回的1就是修改成功",
+                iUserService.updateUsergoldOrTicketOrScoreOrCoupon(params));
+    }
 
 //---------------------------测试代码-----------------------------------
 
