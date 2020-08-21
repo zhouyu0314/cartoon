@@ -2,6 +2,8 @@ server:
   port: 8002
 
 spring:
+  thymeleaf:
+    prefix: classpath:/templates/
   main:
     allow-bean-definition-overriding: true
   kafka:

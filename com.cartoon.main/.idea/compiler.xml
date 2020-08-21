@@ -6,6 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="com.cartoon.panicBuying" />
+        <module name="com.cartoon.gateway" />
         <module name="com.cartoon.social.contact" />
         <module name="com.cartoon.user.oauth" />
         <module name="com.cartoon.user.oauth.api" />
@@ -14,7 +16,8 @@
         <module name="com.cartoon.user.api" />
         <module name="com.cartoon.common.api" />
         <module name="com.cartoon.social.contact.api" />
-        <module name="com.cartoon.gateway" />
+        <module name="com.cartoon.panicBuying.api" />
+        <module name="test01" />
       </profile>
     </annotationProcessing>
   </component>
@@ -24,12 +27,15 @@
       <module name="com.cartoon.eureka" options="-parameters" />
       <module name="com.cartoon.gateway" options="-parameters" />
       <module name="com.cartoon.main" options="-parameters" />
+      <module name="com.cartoon.panicBuying" options="-parameters" />
+      <module name="com.cartoon.panicBuying.api" options="-parameters" />
       <module name="com.cartoon.social.contact" options="-parameters" />
       <module name="com.cartoon.social.contact.api" options="-parameters" />
       <module name="com.cartoon.user" options="-parameters" />
       <module name="com.cartoon.user.api" options="-parameters" />
       <module name="com.cartoon.user.oauth" options="-parameters" />
       <module name="com.cartoon.user.oauth.api" options="-parameters" />
+      <module name="test01" options="-parameters" />
     </option>
   </component>
 </project>

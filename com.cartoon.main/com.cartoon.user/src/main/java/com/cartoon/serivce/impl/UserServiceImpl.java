@@ -250,7 +250,7 @@ public class UserServiceImpl implements IUserService {
         String phone = params.get("phone").toString();
         User user = new User();
         user.setPhone(phone);
-
+        params.put("phone",phone);
         Integer type = Integer.valueOf(params.get("type").toString());
         Integer count = Integer.valueOf(params.get("count").toString());
         switch (type){

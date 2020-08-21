@@ -8,6 +8,5 @@ com\cartoon\oauth\config\CustomUserAuthenticationConverter.class
 com\cartoon\OAuthApplication.class
 com\cartoon\controller\AuthController.class
 com\cartoon\oauth\config\UserDetailsServiceImpl.class
-com\cartoon\aop\OauthLogAspects.class
 com\cartoon\oauth\config\AuthorizationServerConfig.class
 com\cartoon\service\impl\AuthServiceImpl.class
