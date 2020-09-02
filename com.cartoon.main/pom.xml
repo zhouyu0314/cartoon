@@ -17,6 +17,8 @@
         <module>com.cartoon.user.oauth.api</module>
         <module>com.cartoon.social.contact</module>
         <module>com.cartoon.social.contact.api</module>
+        <module>com.cartoon.panicBuying</module>
+        <module>com.cartoon.panicBuying.api</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

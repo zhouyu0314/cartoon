@@ -183,6 +183,8 @@ public class UserController extends BaseController {
 
 
     /**
+     * 修改用户的金币、月票、积分、券
+     *
      * 前端需提供
      * 1.用户phone
      * 2.记录分类type（元宝（gold）1、阅读券(coupon)2、积分(score)3、月票(ticket)4、vip5）

@@ -43,6 +43,12 @@ public class AccountRecordServiceImpl implements AccountRecordService {
         return pageUtil;
     }
 
+    @Override
+    public void addAccountRecord(AccountRecord accountRecord) {
+        mongoTemplate.save(accountRecord, "accountRecords");
+    }
+
+
     //-----------------------private------------------------------------
 
     /**

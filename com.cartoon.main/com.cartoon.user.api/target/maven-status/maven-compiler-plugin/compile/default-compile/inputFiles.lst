@@ -1,3 +1,5 @@
-D:\java\IDEA\com.cartoon.main\com.cartoon.user.api\src\main\java\com\cartoon\entity\User.java
-D:\java\IDEA\com.cartoon.main\com.cartoon.user.api\src\main\java\com\cartoon\feign\UserFeignClient.java
-D:\java\IDEA\com.cartoon.main\com.cartoon.user.api\src\main\java\com\cartoon\entity\Productcategory.java
+E:\workspace\com.cartoon.main\com.cartoon.user.api\src\main\java\com\cartoon\feign\UserFeignClient.java
+E:\workspace\com.cartoon.main\com.cartoon.user.api\src\main\java\com\cartoon\feign\AccountRecordFeignClient.java
+E:\workspace\com.cartoon.main\com.cartoon.user.api\src\main\java\com\cartoon\entity\User.java
+E:\workspace\com.cartoon.main\com.cartoon.user.api\src\main\java\com\cartoon\entity\AccountRecord.java
+E:\workspace\com.cartoon.main\com.cartoon.user.api\src\main\java\com\cartoon\entity\Productcategory.java

@@ -2,13 +2,11 @@ package com.cartoon.controller;
 
 import com.cartoon.dto.Dto;
 import com.cartoon.dto.DtoUtil;
+import com.cartoon.entity.AccountRecord;
 import com.cartoon.serivce.AccountRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,5 +44,20 @@ public class AccountRecordController {
         return DtoUtil.returnSuccess("消费记录"+recordList.get(type-1),accountRecordService.findAccountRecord(params));
     }
 
+
+//------------------------feign--------------------------------
+    /**
+     * 创建消费记录，前端需提供：
+     * 2.记录分类（阅读券1、积分2、月票3、优惠券4、限免券5、净化卡6）
+     * 3.记录描述
+     * 4.数量
+     * 5.消费目标/获得来源
+     * @return
+     */
+    @PostMapping("/addAccountRecords")
+    public void addAccountRecords(@RequestBody AccountRecord accountRecord){
+        System.out.println("调用");
+        accountRecordService.addAccountRecord(accountRecord);
+    }
 
 }

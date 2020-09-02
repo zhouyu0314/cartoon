@@ -1,10 +1,10 @@
 package com.cartoon.async;
 
 import com.cartoon.entity.AccountRecord;
+import com.cartoon.serivce.AccountRecordService;
 import com.cartoon.util.IdWorker;
 import com.cartoon.util.SimpleDate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class AccountRecordAsyn {
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private AccountRecordService accountRecordService;
 
     /**
      * 创建消费记录，前端需提供：
@@ -26,7 +26,6 @@ public class AccountRecordAsyn {
      */
     @Async
     public void add(Map<String, Object> params) {
-
         AccountRecord accountRecord = new AccountRecord();
         accountRecord.setId(IdWorker.getId());
         accountRecord.setCreateTime(SimpleDate.getDate(new Date()));
@@ -40,6 +39,6 @@ public class AccountRecordAsyn {
         }else{
             accountRecord.setTarget(target.toString());
         }
-        mongoTemplate.save(accountRecord, "accountRecords");
+        accountRecordService.addAccountRecord(accountRecord);
     }
 }

@@ -24,8 +24,6 @@ import java.util.Map;
 
 /**
  * redis失效key监听
- *
- * @author 郑文
  */
 @Component
 public class RedisKeyExpirationListener extends KeyExpirationEventMessageListener {

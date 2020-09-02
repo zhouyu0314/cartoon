@@ -14,4 +14,9 @@ public interface AccountRecordService {
      */
     PageUtil<AccountRecord> findAccountRecord(Map<String,Object> params);
 
+    /**
+     * 添加记录
+     */
+    void addAccountRecord(AccountRecord accountRecord);
+
 }

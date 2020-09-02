@@ -72,7 +72,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http.authorizeRequests()
                 //下边的路径放行
                 .antMatchers(
-                            "/api/user/userReg",
+                        "/api/accountRecord/addAccountRecords",
+                        "/api/user/userReg",
                             "/api/user/serchUserByPhoneFeign",
                         "/api/user/show2",
                             "/swagger*//**",
