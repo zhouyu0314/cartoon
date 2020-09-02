@@ -43,7 +43,9 @@
             <if test="endTime != null and endTime!=''">
                 <![CDATA[ and end_time<=#{endTime} ]]>
             </if>
-
+            <if test="status != null">
+                and status=#{status}
+            </if>
             <if test="ids != null">
                 and id not in
                 <foreach collection="ids" item="item" separator="," open="(" close=")">
@@ -84,13 +86,18 @@
                         type,
                         count,
                         start_time,
-                        end_time)
+                        end_time,
+                        phone,
+                        status
+                        )
         values(
          #{id},
                      #{type},
                      #{count},
                      #{startTime},
-                    #{endTime})
+                    #{endTime},
+                    #{phone},
+                    #{status})
     </insert>
 
     <update id="updateGift" parameterType="com.cartoon.entity.Gift">
@@ -106,7 +113,15 @@
                 start_time=#{startTime},
             </if>
             <if test="endTime != null and endTime!=''">
-                end_time=#{endTime}
+                end_time=#{endTime},
+            </if>
+
+            <if test="phone != null and phone!=''">
+                phone=#{phone},
+            </if>
+
+            <if test="status != null and status!=''">
+                status=#{status}
             </if>
         </trim>
     </update>

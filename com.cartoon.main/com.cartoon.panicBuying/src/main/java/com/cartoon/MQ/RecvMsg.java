@@ -34,6 +34,7 @@ public class RecvMsg {
         accountRecord.setCount(gift.getCount());
         accountRecord.setPhone(gift.getPhone());
         accountRecord.setRecordReason("系统红包");
+        accountRecord.setType(gift.getType());
         accountRecordFeignClient.addAccountRecords(accountRecord);
     }
 }

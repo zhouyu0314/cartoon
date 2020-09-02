@@ -113,11 +113,15 @@
                 start_time=#{startTime},
             </if>
             <if test="endTime != null and endTime!=''">
-                end_time=#{endTime}
+                end_time=#{endTime},
             </if>
 
             <if test="phone != null and phone!=''">
-                phone=#{phone}
+                phone=#{phone},
+            </if>
+
+            <if test="status != null and status!=''">
+                status=#{status}
             </if>
         </trim>
     </update>

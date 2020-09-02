@@ -17,9 +17,11 @@
         <module name="com.cartoon.common.api" />
         <module name="com.cartoon.social.contact.api" />
         <module name="com.cartoon.panicBuying.api" />
-        <module name="test01" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="test01" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

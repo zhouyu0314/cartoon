@@ -25,7 +25,7 @@ public class GiftTask {
     private Integer redPacketCount;
 
     /**
-     * 每天11-21每个5秒自动扫描db添加redis
+     * 每天11-21每隔5秒自动扫描db添加redis
      */
     //@Scheduled(cron = "0/5 * 11-21 * * ?")
     @Scheduled(cron = "0/5 * * * * ?")
@@ -76,7 +76,37 @@ public class GiftTask {
     /**
      * 当过了场次之后，要查看还有多少上一个上次没抢完的红包，并删除redis表，没抢完的需要修改红包状态为2
      **/
+    //14点到23点，每小时的第一分钟执行一次
+    @Scheduled(cron = "* 1 14-23 * * ?")
+    //@Scheduled(cron = "0/5 * * * * ?")
+    public void del(){
+        //获取当前时间段的开始时间
+        Date currentStartTime = DateUtil.getDateMenus().get(0);
+        //获取上一场次
+        Date prevStartTime = DateUtil.addDateHour(currentStartTime, -2);
 
+        /*
+        需要删除
+        "rushPurchaseTime:" 秒杀时段
+        "rushPurchaseToken:" 秒杀商品令牌队列
+        "commitCount-" 提交次数
+         */
+        //删除秒杀场次
+        redisUtil.hdel(GiftEmun.rushPurchaseTime.getName()+prevStartTime);
+        //删除剩余没抢完的商品令牌
+        if (redisUtil.hasKey(GiftEmun.rushPurchaseToken.getName()+prevStartTime)) {
+            //如果有,取出场次里的全部,修改数据库状态2失效
+            List<Object> objects = redisUtil.lGet(GiftEmun.rushPurchaseToken.getName() + prevStartTime, 0, -1);
+            for (Object object : objects) {
+                Gift gift = (Gift)object;
+                gift.setStatus(2);
+                giftService.updateGift(gift);
+            }
+        }
+        //删除用户上一个场次的提交次数
+        redisUtil.del(GiftEmun.commitCount.getName()+prevStartTime);
+
+    }
 
 
 

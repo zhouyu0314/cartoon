@@ -17,6 +17,8 @@ public interface AccountRecordFeignClient {
      * @param accountRecord
      * @return
      */
-    @PostMapping("/api/user/addAccountRecords")
+    @PostMapping("/api/accountRecord/addAccountRecords")
     void addAccountRecords(@RequestBody AccountRecord accountRecord);
+
+
 }

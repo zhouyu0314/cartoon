@@ -1,6 +1,10 @@
 package com.cartoon.service;
 
 import com.cartoon.entity.Gift;
+import com.cartoon.exceptions.DataNotFoundException;
+import com.cartoon.exceptions.RecommitException;
+import com.cartoon.exceptions.SellOutException;
+import com.cartoon.exceptions.UpdateDataException;
 
 import java.util.List;
 import java.util.Map;
@@ -32,19 +36,19 @@ public interface GiftService {
     /**
      * 抢红包
      */
-    void RushRedPacket(String extime);
+    void RushRedPacket(String extime)throws SellOutException, RecommitException;
 
     /**
      * 抢成功的修改状态为1 ，过了场次之后修改没被抢的红包为2
      * @param gift
      * @return
      */
-    Integer updateGift(Gift gift);
+    Integer updateGift(Gift gift)throws UpdateDataException;
 
     /**
      * 查看redis中用户抢红包的状态
      */
-    Gift showGiftStatus();
+    Gift showGiftStatus(String extime)throws DataNotFoundException;
 
 
 

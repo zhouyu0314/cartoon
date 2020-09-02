@@ -56,6 +56,7 @@ public class AccountRecordController {
      */
     @PostMapping("/addAccountRecords")
     public void addAccountRecords(@RequestBody AccountRecord accountRecord){
+        System.out.println("调用");
         accountRecordService.addAccountRecord(accountRecord);
     }
 

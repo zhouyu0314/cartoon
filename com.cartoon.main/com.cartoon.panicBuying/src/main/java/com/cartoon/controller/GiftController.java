@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/panicbuying")
-public class GiftController {
+public class GiftController extends BaseController {
     @Autowired
     private GiftService giftService;
 
@@ -29,7 +29,16 @@ public class GiftController {
      * @return
      */
     @GetMapping("/showGiftStatus")
-    public Dto showGiftStatus(){
-        return DtoUtil.returnSuccess("用户状态",giftService.showGiftStatus());
+    public Dto showGiftStatus(String extime){
+        return DtoUtil.returnSuccess("用户状态",giftService.showGiftStatus(extime));
+    }
+
+    /**
+     * 抢红包,返回排队中。前端异步查看状态。
+     */
+    @GetMapping("/RushRedPacket")
+    public Dto RushRedPacket(String extime){
+        giftService.RushRedPacket(extime);
+        return DtoUtil.returnSuccess("排队中");
     }
 }

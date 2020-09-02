@@ -4,10 +4,7 @@ import com.cartoon.async.GiftAsync;
 import com.cartoon.config.DateUtil;
 import com.cartoon.entity.Gift;
 import com.cartoon.enums.GiftEmun;
-import com.cartoon.exceptions.DataNotFoundException;
-import com.cartoon.exceptions.InsertDataException;
-import com.cartoon.exceptions.RecommitException;
-import com.cartoon.exceptions.UpdateDataException;
+import com.cartoon.exceptions.*;
 import com.cartoon.mapper.GiftMapper;
 import com.cartoon.service.GiftService;
 import com.cartoon.util.IdWorker;
@@ -121,7 +118,7 @@ public class GiftServiceImpl implements GiftService {
     }
 
 
-    //此方法为测试放啊，最终需要放到定时任务执行
+    //此方法为测试方法，最终需要放到定时任务执行
     @Override
         public void addDB() {
            /*
@@ -156,29 +153,31 @@ public class GiftServiceImpl implements GiftService {
         }
     }
 
+    //抢红包
     @Override
-    public void RushRedPacket(String extime) {
+    public void RushRedPacket(String extime) throws SellOutException,RecommitException {
         //获取用户phone
         String phone = TokenDecode.getUserInfo().get("username");
 
         //判断是否重复提交
-        if (redisUtil.hincr(GiftEmun.commitCount.getName() + phone, phone, 1) > 1) {
+        if (redisUtil.hincr(GiftEmun.commitCount.getName()+extime/*+":" + phone*/, phone, 1) > 1) {
             throw new RecommitException("请勿重复提交！");
         }
 
-        //加入redis 的list队列
-        redisUtil.lSet(GiftEmun.userQueue.getName(),phone);
+        //用户加入redis 的list队列,
+        redisUtil.lSet(GiftEmun.userQueue.getName()+extime,phone);
         //将用户加入购买状态redis hash
         Gift gift = new Gift();
+        gift.setStatus(0);
         //状态 0未抢到 1已抢到 2失效
         Map<String,Object> map = new HashMap<>();
         map.put(phone,gift);
-        redisUtil.hmset(GiftEmun.userRushStatus.getName(),map);
-        giftAsync.rushAsync();
+        redisUtil.hmset(GiftEmun.userRushStatus.getName()+extime,map);
+        giftAsync.rushAsync(extime);
     }
 
     @Override
-    public Integer updateGift(Gift gift) {
+    public Integer updateGift(Gift gift)throws UpdateDataException{
         Integer rows = giftMapper.updateGift(gift);
         if (rows != 1) {
             throw new UpdateDataException("修改数据失败！");
@@ -186,13 +185,18 @@ public class GiftServiceImpl implements GiftService {
         return rows;
     }
 
+    //查询redis中红包的状态，查询完之后只要不是派对中（status 1）就可以删除了
     @Override
-    public Gift showGiftStatus() {
+    public Gift showGiftStatus(String extime)throws  DataNotFoundException {
         //获取用户phone
         String phone = TokenDecode.getUserInfo().get("username");
-        Gift gift = (Gift) redisUtil.hmget(GiftEmun.userRushStatus.getName()).get(phone);
+        Gift gift = (Gift) redisUtil.hmget(GiftEmun.userRushStatus.getName()+extime).get(phone);
         if (gift == null) {
             throw new DataNotFoundException("未查询到数据！");
+        }
+        //查询完之后只要不是派对中（status 1）就可以删除了
+        if (gift.getStatus()!=1) {
+            redisUtil.hdel(GiftEmun.userRushStatus.getName()+extime,phone);
         }
         return gift;
     }

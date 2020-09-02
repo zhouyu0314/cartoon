@@ -20,7 +20,7 @@ public class SendMsg {
         rabbitTemplate.convertAndSend(GiftMQ.RUSHREDPACKET_DELAY_EXCHANGE,GiftMQ.RUSHREDPACKET_DELAY_ROUTING_KEY, gift, new MessagePostProcessor() {
             @Override
             public Message postProcessMessage(Message message) throws AmqpException {
-                message.getMessageProperties().setExpiration(((int)(Math.random()*90000))+"");
+                message.getMessageProperties().setExpiration(((int)(Math.random()*5000))+"");
                 return message;
             }
         });

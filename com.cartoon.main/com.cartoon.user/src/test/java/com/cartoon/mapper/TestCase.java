@@ -2,15 +2,13 @@ package com.cartoon.mapper;
 
 import com.cartoon.util.RedisUtil;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 @SpringBootTest
 public class TestCase {
     @Autowired
@@ -52,6 +50,12 @@ public class TestCase {
         params.put("3","c");
         redisUtil.hmset("testredis",params,20);
 
+    }
+
+    @Test
+    public void test01(){
+        String str = "a";
+        System.out.println(str.charAt(0)-0);
     }
 
 }
