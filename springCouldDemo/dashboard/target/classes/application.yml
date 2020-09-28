@@ -1,0 +1,22 @@
+server:
+  port: 7003
+
+#微服务的名字，唯一
+spring:
+  application:
+    name: com.gy.dashboard
+
+#eureka地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+  #使用ip注册 客户端用
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+
+turbine:
+  # 要监控的微服务列表，多个用,分隔
+  app-config: com.gy.user,com.gy.order #微服在注册中心的名字
+  cluster-name-expression:  "'default'"

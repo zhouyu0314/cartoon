@@ -1,0 +1,32 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name: com.gy.user
+  main:
+    allow-bean-definition-overriding: true
+#eureka地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+  #使用ip注册 客户端用
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+
+#配置hysrtix,要监控谁就给谁配，不管是用rest熔断还是feign熔断都要加下面，下面是将熔断错误的信息发送给监控者
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream #配置hystrix的流文件
+
+hystrix:
+  command:
+    default:
+      circuitBreaker:
+        enabled: true
+mybatis:
+  mapper-locations: classpath:mappers/*.xml

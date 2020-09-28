@@ -1,0 +1,41 @@
+server:
+  port: 7002
+spring:
+  application:
+    name: com.gy.gateway
+  cloud: #gateway配置
+    gateway:
+      globalcors: #支持跨域
+        corsConfigurations:
+          '[/**]': # 匹配所有请求
+            allowedOrigins: "*" #跨域处理 允许所有的域
+            allowedMethods: # 支持的方法
+              - GET
+              - POST
+              - PUT
+              - DELETE
+      routes:
+        - id: user #我们自定义的路由 ID，保持唯一
+          uri: lb://com.gy.user #微服名字(动态)
+          predicates: #路由条件，Predicate 接受一个输入参数，返回一个布尔值结果。该接口包含多种默 认方法来将 Predicate 组合成其他复杂的逻辑（比如：与，或，非）
+            - Path=/api/user/**
+        - id: order #我们自定义的路由 ID，保持唯一
+          uri: lb://com.gy.order #微服名字(动态)
+          predicates: #路由条件，Predicate 接受一个输入参数，返回一个布尔值结果。该接口包含多种默 认方法来将 Predicate 组合成其他复杂的逻辑（比如：与，或，非）
+            - Path=/api/order/**
+#          filters:
+#            - name: RequestRateLimiter #基于令牌桶的限流支持，此RequestRateLimiterGatewayFilterFactory通过Redis和lua脚本结合的方式进行流量控制
+#              args:
+#                key-resolver: '#{@pathKeyResolver}' # 使用SpEL从容器中获取对象
+#                redis-rate-limiter.replenishRate: 1 # 令牌桶每秒填充平均速率
+#                redis-rate-limiter.burstCapacity: 3 # 令牌桶的总容量
+
+#eureka地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+  #使用ip注册 客户端用
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
