@@ -11,17 +11,18 @@
     <modules>
         <module>eureka</module>
         <module>springCouldDemo.common.api</module>
-        <module>user</module>
-        <module>user.api</module>
         <module>order</module>
         <module>order.api</module>
         <module>gateway</module>
         <module>dashboard</module>
+        <module>gift</module>
+        <module>gift.api</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.1.6.RELEASE</version>
+<!--        <version>2.0.4.RELEASE</version>-->
     </parent>
 
     <properties>

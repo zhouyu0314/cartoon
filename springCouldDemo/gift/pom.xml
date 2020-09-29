@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>person</artifactId>
+    <artifactId>gift</artifactId>
 <dependencies>
     <!--支持全栈式Web开发，包括Tomcat和spring-webmvc-->
     <dependency>
@@ -39,17 +39,33 @@
     </dependency>
 
     <dependency>
-        <artifactId>person.api</artifactId>
+        <artifactId>gift.api</artifactId>
         <groupId>com.gy</groupId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
+    <!--mysql-->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+    <!--mybatis-->
+    <dependency>
+        <groupId>org.mybatis.spring.boot</groupId>
+        <artifactId>mybatis-spring-boot-starter</artifactId>
+        <version>1.3.2</version>
+    </dependency>
+
 
     <dependency>
-        <artifactId>order.api</artifactId>
-        <groupId>com.gy</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
     </dependency>
-
 </dependencies>
 
 </project>

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>person.api</artifactId>
+    <artifactId>gift.api</artifactId>
 
     <dependencies>
         <dependency>
@@ -23,6 +23,4 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
     </dependencies>
-
-
 </project>

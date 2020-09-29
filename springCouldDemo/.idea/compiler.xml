@@ -6,22 +6,28 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="user" />
         <module name="gateway" />
         <module name="order.api" />
         <module name="order" />
         <module name="eureka" />
         <module name="dashboard" />
-        <module name="user.api" />
+        <module name="gift.api" />
         <module name="springCouldDemo.common.api" />
+        <module name="gift" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="user" target="1.8" />
+      <module name="user.api" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="dashboard" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="gateway" options="-parameters" />
+      <module name="gift" options="-parameters" />
+      <module name="gift.api" options="-parameters" />
       <module name="order" options="-parameters" />
       <module name="order.api" options="-parameters" />
       <module name="springCouldDemo" options="-parameters" />
