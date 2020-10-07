@@ -1,22 +1,16 @@
 package com.gy.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-/**
- * @Description: 动态数据源路由配置
- */
+
+@Slf4j
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
-
-
-
-    private static Logger logger = LoggerFactory.getLogger(DynamicRoutingDataSource.class);
 
     @Override
     protected Object determineCurrentLookupKey() {
-        String dataSourceName = DynamicDataSourceContextHolder.getDataSourceRouterKey();
-        logger.info("当前数据源是：{}", dataSourceName);
-        return DynamicDataSourceContextHolder.getDataSourceRouterKey();
+        log.info("当前数据源 [{}]", DynamicDataSourceContextHolder.getDataSourceKey());
+        return DynamicDataSourceContextHolder.getDataSourceKey();
     }
 }

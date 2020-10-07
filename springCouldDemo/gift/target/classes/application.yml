@@ -11,24 +11,21 @@ spring:
       seata:
         tx-service-group: my_test_tx_group
   datasource:
-    cluster:
-      - key: xuzhou
-        password:
-        url: jdbc:mysql://localhost:3306/gy_xuzhou?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-        idle-timeout: 20000
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        username: root
-        type: com.zaxxer.hikari.HikariDataSource
-      - key: nanjing
-        password:
-        url: jdbc:mysql://localhost:3306/gy_nanjing?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        username: root
-      - key: beijing
-        password:
-        url: jdbc:mysql://localhost:3306/gy_beijing?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        username: root
+    xuzhou:
+      url: jdbc:mysql://localhost:3306/gy_xuzhou?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password:
+    nanjing:
+      url: jdbc:mysql://localhost:3306/gy_nanjing?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password:
+    beijing:
+      password:
+      url: jdbc:mysql://localhost:3306/gy_beijing?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
 
 
 #eureka地址

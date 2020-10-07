@@ -1,6 +1,6 @@
 package com.gy.aop;
 
-import com.gy.cons.Cons;
+import com.gy.utils.Cons;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
@@ -18,19 +18,19 @@ public class CurrentAreaAspect {
     public void before(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         Map arg = (Map) args[0];
-        Cons.setCurrentArea(arg.get("area").toString());
-        }
-
-
-        @AfterReturning(value = "pointCut()", returning = "result")
-        public void afterReturning (JoinPoint joinPoint, Object result){
-
-
-        }
-
-
-        @AfterThrowing(value = "pointCut()", throwing = "e")
-        public void afterReturning (JoinPoint joinPoint, RuntimeException e){
-
-        }
+        Cons.setCurrentArea(Integer.valueOf(arg.get("area").toString()));
     }
+
+
+    @AfterReturning(value = "pointCut()", returning = "result")
+    public void afterReturning(JoinPoint joinPoint, Object result) {
+
+
+    }
+
+
+    @AfterThrowing(value = "pointCut()", throwing = "e")
+    public void afterReturning(JoinPoint joinPoint, RuntimeException e) {
+
+    }
+}

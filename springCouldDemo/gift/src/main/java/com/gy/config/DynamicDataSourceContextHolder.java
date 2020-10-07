@@ -1,54 +1,31 @@
 package com.gy.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Description: 数据源上下文
- */
+
 public class DynamicDataSourceContextHolder {
 
+    //设置默认数据源，暂时不需要
+    //private static final ThreadLocal<String> CONTEXT_HOLDER = ThreadLocal.withInitial(DataSourceKey.BEIJING::name);
 
+    private static final ThreadLocal<String> CONTEXT_HOLDER = new ThreadLocal<>();
 
-    private static Logger logger = LoggerFactory.getLogger(DynamicDataSourceContextHolder.class);
+    private static List<Object> dataSourceKeys = new ArrayList<>();
 
-    /**
-     * 存储已经注册的数据源的key
-     */
-    public static List<String> dataSourceIds = new ArrayList<>();
-
-    /**
-     * 线程级别的私有变量
-     */
-    private static final ThreadLocal<String> HOLDER = new ThreadLocal<>();
-
-    public static String getDataSourceRouterKey () {
-        return HOLDER.get();
+    public static void setDataSourceKey(String dataSource) {
+        CONTEXT_HOLDER.set(dataSource);
     }
 
-    public static void setDataSourceRouterKey (String dataSourceRouterKey) {
-        logger.info("切换至{}数据源", dataSourceRouterKey);
-        HOLDER.set(dataSourceRouterKey);
+    public static String getDataSourceKey() {
+        return CONTEXT_HOLDER.get();
     }
 
-    /**
-     * 设置数据源之前一定要先移除
-     */
-    public static void removeDataSourceRouterKey () {
-        HOLDER.remove();
+    public static void clearDataSourceKey() {
+        CONTEXT_HOLDER.remove();
     }
 
-    /**
-     * 判断指定DataSrouce当前是否存在
-     *
-     * @param dataSourceId
-     * @return
-     */
-    public static boolean containsDataSource(String dataSourceId){
-        return dataSourceIds.contains(dataSourceId);
+    public static List<Object> getDataSourceKeys() {
+        return dataSourceKeys;
     }
-
 }

@@ -6,7 +6,7 @@ localhost:8002/api/order/getOrderByUserID
 
 localhost:8003/api/gift/buySomeGift  买
 {"ids":"830514884901867520,830306239173890048","counts":"3,5","area": "beijing"}
-
+localhost:8003/api/gift/getGiftById
 
 
 

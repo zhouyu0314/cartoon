@@ -1,4 +1,4 @@
-package com.gy.cons;
+package com.gy.utils;
 
 public class Cons {
     private static ThreadLocal<Integer> CURRENT_ARAE = new ThreadLocal<>();
