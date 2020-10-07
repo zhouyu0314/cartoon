@@ -1,23 +1,22 @@
 package com.gy.aop;
 
-import com.gy.annotation.DataSource;
 import com.gy.config.DynamicDataSourceContextHolder;
+import com.gy.cons.Cons;
+import com.gy.exceptions.DataSourceNotFoundException;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @Auther: yukong
- * @Date: 2018/8/17 09:15
  * @Description:
  */
 public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor {
+
 
     private static final Logger logger = LoggerFactory.getLogger(DynamicDataSourceAnnotationInterceptor.class);
 
@@ -32,7 +31,8 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
         try {
             String datasource = determineDatasource(invocation);
             if (! DynamicDataSourceContextHolder.containsDataSource(datasource)) {
-                logger.info("数据源[{}]不存在，使用默认数据源 >", datasource);
+                logger.error("数据源[{}]不存在",datasource);
+                throw new DataSourceNotFoundException("归属地错误！");
             }
             DynamicDataSourceContextHolder.setDataSourceRouterKey(datasource);
             return invocation.proceed();
@@ -42,15 +42,20 @@ public class DynamicDataSourceAnnotationInterceptor implements MethodInterceptor
     }
 
     private String determineDatasource(MethodInvocation invocation) {
-        Method method = invocation.getMethod();
-        if (METHOD_CACHE.containsKey(method)) {
-            return METHOD_CACHE.get(method);
-        } else {
-            DataSource ds = method.isAnnotationPresent(DataSource.class) ? method.getAnnotation(DataSource.class)
-                    : AnnotationUtils.findAnnotation(method.getDeclaringClass(), DataSource.class);
-            METHOD_CACHE.put(method, ds.value());
-            return ds.value();
+//        Method method = invocation.getMethod();
+//        Parameter[] parameters = method.getParameters();
+        //注解有值时，使用注解的 没有进else
+//        if (METHOD_CACHE.containsKey(method)) {
+//            return METHOD_CACHE.get(method);
+//        } else {
+//            DataSource ds = method.isAnnotationPresent(DataSource.class) ? method.getAnnotation(DataSource.class)
+//                    : AnnotationUtils.findAnnotation(method.getDeclaringClass(), DataSource.class);
+//            METHOD_CACHE.put(method, ds.value());
+            //return ds.value();
+        String currentArea = Cons.getCurrentArea();
+
+        return currentArea;
         }
-    }
+//    }
 
 }

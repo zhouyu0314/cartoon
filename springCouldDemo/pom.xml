@@ -17,6 +17,8 @@
         <module>dashboard</module>
         <module>gift</module>
         <module>gift.api</module>
+        <module>user</module>
+        <module>user.api</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

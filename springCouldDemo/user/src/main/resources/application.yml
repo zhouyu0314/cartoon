@@ -6,6 +6,10 @@ spring:
     name: com.gy.user
   main:
     allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/gy_master?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password:
 #eureka地址
 eureka:
   client:

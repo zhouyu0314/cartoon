@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gy.mapper.OrderItemMapper">
+
+    <select id="getOrderItemById" resultType="com.gy.entity.OrderItem">
+        select
+                id as id,
+                gift_id as giftId,
+                item_count as itemCount,
+                item_price as itemPrice,
+                orders_id as ordersId
+        from order_item
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getOrderItemListByMap" resultType="com.gy.entity.OrderItem" parameterType="java.util.Map">
+        select
+                id as id,
+                gift_id as giftId,
+                item_count as itemCount,
+                item_price as itemPrice,
+        orders_id as ordersId
+        from order_item
+        <trim prefix="where" prefixOverrides="and | or">
+                <if test="id != null and id!=''">
+                    and id=#{id}
+                </if>
+                <if test="giftId != null and giftId!=''">
+                    and gift_id=#{giftId}
+                </if>
+                <if test="itemCount != null and itemCount!=''">
+                    and item_count=#{itemCount}
+                </if>
+                <if test="itemPrice != null and itemPrice!=''">
+                    and item_price=#{itemPrice}
+                </if>
+            <if test="ordersId != null and ordersId!=''">
+                and orders_id=#{ordersId}
+            </if>
+        </trim>
+        <if test="beginPos != null and pageSize != null ">
+            limit #{beginPos},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getOrderItemCountByMap" resultType="Integer"  parameterType="java.util.Map">
+        select count(*) from order_item
+        <trim prefix="where" prefixOverrides="and | or">
+                <if test="id != null and id!=''">
+                    and id=#{id}
+                </if>
+                <if test="giftId != null and giftId!=''">
+                    and gift_id=#{giftId}
+                </if>
+                <if test="itemCount != null and itemCount!=''">
+                    and item_count=#{itemCount}
+                </if>
+                <if test="itemPrice != null and itemPrice!=''">
+                    and item_price=#{itemPrice}
+                </if>
+            <if test="ordersId != null and ordersId!=''">
+                and orders_id=#{ordersId}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insertOrderItem" parameterType="com.gy.entity.OrderItem">
+        insert into order_item(
+        id,
+                        gift_id,
+                        item_count,
+                        item_price,
+                                        orders_id)
+        values(
+        #{id},
+                     #{giftId},
+                     #{itemCount},
+                    #{itemPrice},
+                                    #{ordersId})
+    </insert>
+
+    <update id="updateOrderItem" parameterType="com.gy.entity.OrderItem">
+        update order_item
+        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+                        <if test="giftId != null and giftId!=''">
+                            gift_id=#{giftId},
+                        </if>
+                        <if test="itemCount != null and itemCount!=''">
+                            item_count=#{itemCount},
+                        </if>
+                        <if test="itemPrice != null and itemPrice!=''">
+                            item_price=#{itemPrice},
+                        </if>
+            <if test="ordersId != null and ordersId!=''">
+                orders_id=#{ordersId}
+            </if>
+        </trim>
+    </update>
+</mapper>

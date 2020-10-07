@@ -1,20 +1,19 @@
 package com.gy.service;
 
-import com.gy.dto.Dto;
 import com.gy.entity.User;
-import com.gy.exceptions.UsernameConflictExcaption;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
 
-    /**
-     * 查询用户信息
-     */
-    User getUserById(Map<String,Object> params)throws UsernameConflictExcaption;
+    User getUserById(Map<String,Object> params);
 
-    /**
-     * 查询我的订单
-     */
-    Dto getOrderByUserID(Map<String,Object> params);
+    List<User> getUserListByMap(Map<String,Object> params);
+
+    Integer getUserCountByMap(Map<String,Object> params);
+
+    Integer insertUser(Map<String,Object> params);
+
+    Integer updateUser(Map<String,Object> params);
 }

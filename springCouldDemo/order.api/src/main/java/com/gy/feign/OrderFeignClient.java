@@ -9,7 +9,8 @@ import java.util.Map;
 
 @FeignClient(value = "com.gy.order")
 public interface OrderFeignClient {
-        @PostMapping("/api/order/getOrderByUserID")
-        Dto getOrderByUserID(@RequestBody Map<String,Object> params);
+
+        @PostMapping("/api/order/genOrders")
+        Dto genOrders(@RequestBody Map<String,Object> params);
 
 }

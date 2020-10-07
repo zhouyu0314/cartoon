@@ -19,7 +19,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class GiftApp {
     public static void main(String[] args) {
 
-        SpringApplication.run(GiftApp.class,args);
+        SpringApplication.run(GiftApp.class, args);
+
     }
 
     @Bean
