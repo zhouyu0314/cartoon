@@ -6,17 +6,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="com.cartoon.panicBuying" />
-        <module name="com.cartoon.gateway" />
         <module name="com.cartoon.social.contact" />
-        <module name="com.cartoon.user.oauth" />
         <module name="com.cartoon.user.oauth.api" />
+        <module name="com.cartoon.user.oauth" />
+        <module name="com.cartoon.panicBuying" />
+        <module name="com.cartoon.panicBuying.api" />
         <module name="com.cartoon.eureka" />
         <module name="com.cartoon.user" />
         <module name="com.cartoon.user.api" />
         <module name="com.cartoon.common.api" />
         <module name="com.cartoon.social.contact.api" />
-        <module name="com.cartoon.panicBuying.api" />
+        <module name="com.cartoon.gateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

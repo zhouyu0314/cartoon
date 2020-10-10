@@ -12,6 +12,7 @@
     <artifactId>com.cartoon.user</artifactId>
 
     <dependencies>
+
         <dependency>
             <artifactId>com.cartoon.user.api</artifactId>
             <groupId>com.cartoon</groupId>

@@ -8,19 +8,17 @@ import java.io.Serializable;
 public class Gift implements Serializable {
     //
     private String id;
-    //
+    //类型
     private Integer type;
-    //
+    //数量
     private Integer count;
-    //
+    //开始时间
     private String startTime;
-    //
+    //结束时间
     private String endTime;
-
     //抢到的用户
     private String phone;
-
-    //状态
+    //状态 0没抢 1抢到 2失效
     private Integer status;
 
     @Override
